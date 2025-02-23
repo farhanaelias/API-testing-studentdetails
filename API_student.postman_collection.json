@@ -1,0 +1,554 @@
+{
+	"info": {
+		"_postman_id": "976c9907-5683-4b86-a383-4ffa2b0a2c6b",
+		"name": "API_student",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40139252"
+	},
+	"item": [
+		{
+			"name": "Get Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//status code\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"//Array length check\r",
+							"pm.test(\"Array length validation\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length).to.be.greaterThan(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/studentsDetails",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"var jsonData = pm.response.json()\r",
+							"pm.environment.set(\"id\",jsonData.id)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//firstname\r",
+							"\r",
+							"var firstName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+							"console.log(firstName)\r",
+							"pm.environment.set(\"firstName\", firstName)\r",
+							"\r",
+							"//middlename\r",
+							"\r",
+							"var middleName = Math.random().toString(36).substring(2, 8);\r",
+							"middleName = middleName.replace(/[0-9]/g, '');\r",
+							"pm.environment.set(\"middleName\", middleName);\r",
+							"console.log(\"Generated Middle Name:\", middleName);\r",
+							"\r",
+							"//lastname\r",
+							"\r",
+							"var lastName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+							"console.log(lastName)\r",
+							"pm.environment.set(\"lastName\", lastName)\r",
+							"\r",
+							"//date of birth\r",
+							"\r",
+							"var today = new Date();\r",
+							"var randomAge = Math.floor(Math.random() * (40 - 18 + 1)) + 18;\r",
+							"today.setFullYear(today.getFullYear() - randomAge);\r",
+							"var dateofBirth = today.toISOString().split('T')[0];\r",
+							"pm.environment.set(\"dateofBirth\", dateofBirth);\r",
+							"console.log(\"Generated Date of Birth: \", dateofBirth); \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n\"first_name\": \"{{firstName}}\", \r\n\"middle_name\": \"{{middleName}}\", \r\n\"last_name\": \"{{lastName}}\", \r\n\"date_of_birth\": \"{{dateofBirth}}\" \r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/studentsDetails",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Specific Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//status code validation\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//ID Field Value Validation\r",
+							"\r",
+							"pm.test(\"ID field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedId = pm.environment.get(\"id\"); \r",
+							"    pm.expect(jsonData.data.id).to.eql(parseInt(expectedId));\r",
+							"});\r",
+							"\r",
+							"//first name field value validation\r",
+							"\r",
+							"pm.test(\"First name field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let FirstName = pm.environment.get(\"firstName\");\r",
+							"    pm.expect(jsonData.data.first_name).to.eql(FirstName);\r",
+							"});\r",
+							"\r",
+							"//middle name field value validation\r",
+							"\r",
+							"pm.test(\"Middle name field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.middle_name).to.eql(pm.environment.get(\"middleName\"));\r",
+							"});\r",
+							"\r",
+							"//last name field validation\r",
+							"\r",
+							"pm.test(\"Last name field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let lastName = pm.environment.get(\"lastName\");\r",
+							"    pm.expect(jsonData.data.last_name).to.eql(lastName);\r",
+							"});\r",
+							"\r",
+							"//date of birth field validation\r",
+							"\r",
+							"pm.test(\"Date of birth field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedDOB = pm.environment.get(\"dateofBirth\");\r",
+							"    console.log(\"Response Date of Birth: \", jsonData.data.date_of_birth);\r",
+							"    console.log(\"Expected Date of Birth: \", expectedDOB);\r",
+							"    pm.expect(jsonData.data.date_of_birth).to.eql(expectedDOB);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/studentsDetails/{{id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"studentsDetails",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Technical Skills",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate a random ID\r",
+							"let dynamicId = Math.floor(Math.random() * 1000); \r",
+							"pm.environment.set(\"dynamicId\", dynamicId);\r",
+							"\r",
+							"\r",
+							"// Generate dynamic language array\r",
+							"let languages = [\r",
+							"  `Language ${Math.floor(Math.random() * 10) + 1}`, \r",
+							"  `Language ${Math.floor(Math.random() * 10) + 1}`   \r",
+							"];\r",
+							"pm.environment.set(\"dynamicLanguages\", JSON.stringify(languages));\r",
+							"\r",
+							"// Generate a random years of experience \r",
+							"let dynamicYearExp = new Date().getFullYear() - Math.floor(Math.random() * 5) + ' years'; \r",
+							"pm.environment.set(\"dynamicYearExp\", dynamicYearExp);\r",
+							"\r",
+							"// Generate a random \"last used\" string\r",
+							"let dynamicLastUsed = `Language ${Math.floor(Math.random() * 10) + 1}`; \r",
+							"pm.environment.set(\"dynamicLastUsed\", dynamicLastUsed);\r",
+							"\r",
+							"// Generate a random student ID\r",
+							"//let dynamicStId = Math.floor(Math.random() * 100); \r",
+							"//pm.environment.set(\"dynamicStId\", dynamicStId);\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//status code validation \r",
+							"\r",
+							"pm.test(\"Status Code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{dynamicId}}\",\r\n  \"language\": {{dynamicLanguages}},\r\n  \"yearexp\": \"{{dynamicYearExp}}\",\r\n  \"lastused\": \"{{dynamicLastUsed}}\",\r\n  \"st_id\": \"{{id}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/technicalskills",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"technicalskills"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Student Address",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate a random house number between 1 and 100\r",
+							"let dynamicHouseNumber = Math.floor(Math.random() * 100) + 1; \r",
+							"pm.environment.set(\"dynamicHouseNumber\", dynamicHouseNumber);\r",
+							"\r",
+							"// Generate a random city name (e.g., \"City 3\")\r",
+							"let dynamicCity = `City ${Math.floor(Math.random() * 10) + 1}`;\r",
+							"pm.environment.set(\"dynamicCity\", dynamicCity);\r",
+							"\r",
+							"// Generate a random state name (e.g., \"State 2\")\r",
+							"let dynamicState = `State ${Math.floor(Math.random() * 5) + 1}`;\r",
+							"pm.environment.set(\"dynamicState\", dynamicState);\r",
+							"\r",
+							"// Generate a random country name (e.g., \"Country 1\")\r",
+							"let dynamicCountry = `Country ${Math.floor(Math.random() * 3) + 1}`;\r",
+							"pm.environment.set(\"dynamicCountry\", dynamicCountry);\r",
+							"\r",
+							"// Generate random phone numbers (two entries)\r",
+							"let dynamicPhoneNumbers = [\r",
+							"    {\r",
+							"        \"Std_Code\": `+${Math.floor(Math.random() * 100) + 1}`,  \r",
+							"        \"Home\": `Home ${Math.floor(Math.random() * 10) + 1}`,   \r",
+							"        \"Mobile\": `Mobile ${Math.floor(Math.random() * 10) + 1}` \r",
+							"    },\r",
+							"    {\r",
+							"        \"Std_Code\": `+${Math.floor(Math.random() * 100) + 1}`,  // \r",
+							"        \"Home\": `Home ${Math.floor(Math.random() * 10) + 1}`,   // \r",
+							"        \"Mobile\": `Mobile ${Math.floor(Math.random() * 10) + 1}` // \r",
+							"    }\r",
+							"];\r",
+							"pm.environment.set(\"dynamicPhoneNumbers\", JSON.stringify(dynamicPhoneNumbers));\r",
+							"\r",
+							"// Generate a random student ID\r",
+							"//let dynamicStId = Math.floor(Math.random() * 1000); \r",
+							"//pm.environment.set(\"dynamicStId\", dynamicStId);\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//status code validation\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//status validation\r",
+							"\r",
+							"pm.test(\"Status is true\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.status).to.eql(\"true\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Message field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.msg).to.eql(\"Add  data success\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"Permanent_Address\": {\r\n    \"House_Number\": \"{{dynamicHouseNumber}}\",\r\n    \"City\": \"{{dynamicCity}}\",\r\n    \"State\": \"{{dynamicState}}\",\r\n    \"Country\": \"{{dynamicCountry}}\",\r\n    \"PhoneNumber\": {{dynamicPhoneNumbers}}\r\n  },\r\n  \"stId\": \"{{id}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/addresses",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"addresses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FINAL STUDENT DETAILS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//status code validation\r",
+							"pm.test(\"Status Code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"// language field validation\r",
+							"pm.test(\"Language field values are correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedLanguage = JSON.parse(pm.environment.get(\"dynamicLanguages\"));\r",
+							"    pm.expect(jsonData.data.TechnicalDetails[0].language).to.eql(expectedLanguage);\r",
+							"});\r",
+							"\r",
+							"//Year of experience field value validation\r",
+							"\r",
+							"pm.test(\"Year of Experience field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedYearExp = pm.environment.get(\"dynamicYearExp\");\r",
+							"    pm.expect(jsonData.data.TechnicalDetails[0].yearexp).to.eql(expectedYearExp);\r",
+							"});\r",
+							"//house number validation\r",
+							"pm.test(\"House Number field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedHouseNumber = pm.environment.get(\"dynamicHouseNumber\").toString(); // Convert to string\r",
+							"    pm.expect(jsonData.data.Address[0].Permanent_Address.House_Number).to.eql(expectedHouseNumber);\r",
+							"});\r",
+							"//city field validation\r",
+							"pm.test(\"City field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedCity = pm.environment.get(\"dynamicCity\");\r",
+							"    pm.expect(jsonData.data.Address[0].Permanent_Address.City).to.eql(expectedCity);\r",
+							"});\r",
+							"//country field validation\r",
+							"pm.test(\"Country field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedCountry = pm.environment.get(\"dynamicCountry\");\r",
+							"    pm.expect(jsonData.data.Address[0].Permanent_Address.Country).to.eql(expectedCountry);\r",
+							"});\r",
+							"//mobile field value validation\r",
+							"pm.test(\"Mobile field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedPhoneNumbers = JSON.parse(pm.environment.get(\"dynamicPhoneNumbers\"));\r",
+							"    let expectedMobile = expectedPhoneNumbers[0].Mobile;\r",
+							"    let actualMobile = jsonData.data.Address[0].Permanent_Address.PhoneNumber[0].Mobile;\r",
+							"    pm.expect(actualMobile).to.eql(expectedMobile);\r",
+							"});\r",
+							"//current address validation\r",
+							"pm.test(\"Current Address field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.Address[0].Current_Address).to.be.null;\r",
+							"});\r",
+							"//state field validation\r",
+							"pm.test(\"State field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedState = pm.environment.get(\"dynamicState\");\r",
+							"    pm.expect(jsonData.data.Address[0].Permanent_Address.State).to.eql(expectedState);\r",
+							"});\r",
+							"//std_code vaalidation\r",
+							"pm.test(\"Std_Code field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedPhoneNumbers = JSON.parse(pm.environment.get(\"dynamicPhoneNumbers\"));\r",
+							"    let expectedStdCode = expectedPhoneNumbers[0].Std_Code;\r",
+							"    let actualStdCode = jsonData.data.Address[0].Permanent_Address.PhoneNumber[0].Std_Code;\r",
+							"    pm.expect(actualStdCode).to.eql(expectedStdCode);\r",
+							"});\r",
+							"//home field validation\r",
+							"pm.test(\"Home field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    let expectedPhoneNumbers = JSON.parse(pm.environment.get(\"dynamicPhoneNumbers\"));\r",
+							"    let expectedHome = expectedPhoneNumbers[0].Home;\r",
+							"    let actualHome = jsonData.data.Address[0].Permanent_Address.PhoneNumber[0].Home;\r",
+							"    pm.expect(actualHome).to.eql(expectedHome);\r",
+							"});\r",
+							"//current_address field validation\r",
+							"pm.test(\"Current Address field value is correct\", function () {\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.Address[0].Current_Address).to.be.null;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/FinalStudentDetails/{{id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"FinalStudentDetails",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
